@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type metaData struct {
+type MetaData struct {
 	ServerStatus bool  `json:"server_status" bson:"server_status"`
 	PlayerCount  int64 `json:"player_count" bson:"player_count"`
 	Updated      bool  `json:"updated" bson:"updated"`
@@ -22,7 +22,7 @@ type Game struct {
 	ReleaseDate time.Time `json:"release_date" bson:"release_date"`
 	CreatedOn   time.Time `json:"created_on" bson:"created_on"`
 	UpdatedOn   time.Time `json:"updated_on" bson:"updated_on"`
-	MetaData    metaData  `json:"metadata" bson:"metadata"`
+	MetaData    MetaData  `json:"metadata" bson:"metadata"`
 }
 
 func (game *Game) GetAllGames(filter interface{}) (*[]Game, error) {

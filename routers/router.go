@@ -25,12 +25,6 @@ func init() {
 			beego.NSRouter("/:gameId", &controllers.GamesController{}, "put:Put"),
 			beego.NSRouter("/:gameId", &controllers.GamesController{}, "delete:Delete"),
 		),
-		beego.NSNamespace("/test",
-			beego.NSInclude(
-				&controllers.TestController{},
-			),
-			beego.NSRouter("/hello", &controllers.TestController{}, "get:Test"),
-		),
 		beego.NSNamespace("/user",
 			beego.NSInclude(
 				&controllers.UserController{},

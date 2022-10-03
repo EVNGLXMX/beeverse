@@ -20,13 +20,13 @@
                 "tags": [
                     "games"
                 ],
-                "description": "get all objects",
+                "description": "Get all games",
                 "operationId": "GamesController.GetAll",
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.GameObject"
+                            "$ref": "#/definitions/mymongo.Game"
                         }
                     },
                     "403": {
@@ -38,7 +38,7 @@
                 "tags": [
                     "games"
                 ],
-                "description": "create games",
+                "description": "Create new game",
                 "operationId": "GamesController.Create",
                 "parameters": [
                     {
@@ -47,16 +47,16 @@
                         "description": "The games content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.GameObject"
+                            "$ref": "#/definitions/mymongo.Game"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "{string} models.GameObject.gameId"
+                    "201": {
+                        "description": "{string} mymongo.Game.GameId"
                     },
-                    "403": {
-                        "description": "body is empty"
+                    "409": {
+                        "description": "game already exists"
                     }
                 }
             }
@@ -66,7 +66,7 @@
                 "tags": [
                     "games"
                 ],
-                "description": "find games by gameId",
+                "description": "Find games by gameId",
                 "operationId": "GamesController.Get",
                 "parameters": [
                     {
@@ -81,7 +81,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.GameObject"
+                            "$ref": "#/definitions/mymongo.Game"
                         }
                     },
                     "403": {
@@ -96,7 +96,7 @@
                 "tags": [
                     "games"
                 ],
-                "description": "update the games",
+                "description": "Update game",
                 "operationId": "GamesController.Update",
                 "parameters": [
                     {
@@ -112,7 +112,7 @@
                         "description": "The body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.GameObject"
+                            "$ref": "#/definitions/mymongo.Game"
                         }
                     }
                 ],
@@ -120,11 +120,14 @@
                     "201": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.GameObject"
+                            "$ref": "#/definitions/mymongo.Game"
                         }
                     },
                     "403": {
                         "description": ":gameId is empty"
+                    },
+                    "404": {
+                        "description": ":mongo: no documents in result"
                     }
                 }
             },
@@ -132,7 +135,7 @@
                 "tags": [
                     "games"
                 ],
-                "description": "delete the games",
+                "description": "Delete game",
                 "operationId": "GamesController.Delete",
                 "parameters": [
                     {
@@ -149,26 +152,6 @@
                     },
                     "403": {
                         "description": "gameId is empty"
-                    }
-                }
-            }
-        },
-        "/test/hello": {
-            "get": {
-                "tags": [
-                    "test"
-                ],
-                "description": "Tests the API",
-                "operationId": "TestController.TestEndpoint",
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/models.Test"
-                        }
-                    },
-                    "403": {
-                        "description": "body is empty"
                     }
                 }
             }
@@ -354,22 +337,6 @@
         }
     },
     "definitions": {
-        "models.GameObject": {
-            "title": "GameObject",
-            "type": "object",
-            "properties": {
-                "game_id": {
-                    "type": "string"
-                },
-                "game_name": {
-                    "type": "string"
-                },
-                "score": {
-                    "type": "integer",
-                    "format": "int64"
-                }
-            }
-        },
         "models.Profile": {
             "title": "Profile",
             "type": "object",
@@ -389,15 +356,6 @@
                 }
             }
         },
-        "models.Test": {
-            "title": "Test",
-            "type": "object",
-            "properties": {
-                "resp": {
-                    "type": "string"
-                }
-            }
-        },
         "models.User": {
             "title": "User",
             "type": "object",
@@ -413,6 +371,52 @@
                 },
                 "Username": {
                     "type": "string"
+                }
+            }
+        },
+        "mymongo.Game": {
+            "title": "Game",
+            "type": "object",
+            "properties": {
+                "created_on": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "game_id": {
+                    "type": "string"
+                },
+                "genres": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "metadata": {
+                    "$ref": "#/definitions/mymongo.MetaData"
+                },
+                "release_date": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "updated_on": {
+                    "type": "string",
+                    "format": "datetime"
+                }
+            }
+        },
+        "mymongo.MetaData": {
+            "title": "MetaData",
+            "type": "object",
+            "properties": {
+                "player_count": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "server_status": {
+                    "type": "boolean"
+                },
+                "updated": {
+                    "type": "boolean"
                 }
             }
         }

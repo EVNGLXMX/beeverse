@@ -16,8 +16,8 @@ type GamesController struct {
 }
 
 // @Title GetAll
-// @Description get all objects
-// @Success 200 {object} models.GameObject
+// @Description Get all games
+// @Success 200 {object} mymongo.Game
 // @Failure 403 :gameId is empty
 // @router / [get]
 func (controller *GamesController) GetAll() {
@@ -37,9 +37,9 @@ func (controller *GamesController) GetAll() {
 }
 
 // @Title Get
-// @Description find games by gameId
+// @Description Find games by gameId
 // @Param	gameId		path 	string	true		"the gameId you want to get"
-// @Success 200  {object} models.GameObject
+// @Success 200  {object} mymongo.Game
 // @Failure 403 :gameId is empty
 // @Failure 404 :game does not exist
 // @router /:gameId [get]
@@ -59,17 +59,17 @@ func (controller *GamesController) GetGameByID() {
 }
 
 // @Title Create
-// @Description create games
-// @Param	body		body 	models.GameObject	true		"The games content"
-// @Success 200 {string} models.GameObject.gameId
-// @Failure 403 body is empty
+// @Description Create new game
+// @Param	body		body 	mymongo.Game	true		"The games content"
+// @Success 201 {string} mymongo.Game.GameId
+// @Failure 409 game already exists
 // @router / [post]
 func (controller *GamesController) Post() {
 	var game mymongo.Game
 	json.Unmarshal(controller.Ctx.Input.RequestBody, &game)
 
 	if game.GameID != "" {
-		_, err := helper.GetGameByID(game.GameID)
+		_, err := helper.InsertGame(game)
 		if err == nil {
 			controller.Data["json"] = map[string]string{"error": "game already exists"}
 			controller.Ctx.ResponseWriter.WriteHeader(409)
@@ -88,11 +88,12 @@ func (controller *GamesController) Post() {
 }
 
 // @Title Update
-// @Description update the games
+// @Description Update game
 // @Param	gameId		path 	string	true		"The gameId you want to update"
-// @Param	body		body 	models.GameObject	true		"The body"
-// @Success 201  {object} models.GameObject
+// @Param	body		body 	mymongo.Game	true		"The body"
+// @Success 201  {object} mymongo.Game
 // @Failure 403 :gameId is empty
+// @Failure 404 :mongo: no documents in result
 // @router /:gameId [put]
 func (controller *GamesController) Put() {
 	gameId := controller.Ctx.Input.Param(":gameId")
@@ -119,7 +120,7 @@ func (controller *GamesController) Put() {
 }
 
 // @Title Delete
-// @Description delete the games
+// @Description Delete game
 // @Param	gameId		path 	string	true		"The gameId you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 403 gameId is empty
